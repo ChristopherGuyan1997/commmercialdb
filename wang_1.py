@@ -102,8 +102,8 @@ def close_all(conn, cu):
     if cu is not None:
       cu.close()
   finally:
-    if cu is not None:
-      cu.close()
+    if conn is not None:                                           #我把这里的cu改成了conn!!!!
+      conn.close()
 ###############################################################
 ####      数据库操作CRUD   START
 ###############################################################
@@ -250,7 +250,7 @@ def init():
   '''初始化方法'''
   #数据库文件绝句路径
   global DB_FILE_PATH
-  DB_FILE_PATH = 'c:\\test\\hongten.db'
+  DB_FILE_PATH = 'hongten.db'
   #数据库表名称
   global TABLE_NAME
   TABLE_NAME = 'student'
