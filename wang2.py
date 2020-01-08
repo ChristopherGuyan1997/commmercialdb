@@ -188,72 +188,60 @@ def drop_table_test():
   print('删除数据库表测试...')
   conn = get_conn(DB_FILE_PATH)
   drop_table(conn, TABLE_NAME)
-def create_table_test():
+def create_table_test(command_create):
   '''创建数据库表测试'''
   print('创建数据库表测试...')
-  create_table_sql = '''CREATE TABLE `student` (
-             `id` int(11) NOT NULL,
-             `name` varchar(20) NOT NULL,
-             `gender` varchar(4) DEFAULT NULL,
-             `age` int(11) DEFAULT NULL,
-             `address` varchar(200) DEFAULT NULL,
-             `phone` varchar(20) DEFAULT NULL,
-              PRIMARY KEY (`id`)
-            )'''
+  create_table_sql = command_create
   conn = get_conn(DB_FILE_PATH)
   create_table(conn, create_table_sql)
-def save_test():
+def save_test(command_save,command_savedata):
   '''保存数据测试...'''
   print('保存数据测试...')
-  save_sql = '''INSERT INTO student values (?, ?, ?, ?, ?, ?)'''
-  data = [(1, 'Hongten', '男', 20, '广东省广州市', '13423****62'),
-      (2, 'Tom', '男', 22, '美国旧金山', '15423****63'),
-      (3, 'Jake', '女', 18, '广东省广州市', '18823****87'),
-      (4, 'Cate', '女', 21, '广东省广州市', '14323****32')]
+  save_sql = command_save
+  data = command_savedata
   conn = get_conn(DB_FILE_PATH)
   save(conn, save_sql, data)
-def fetchall_test():
+def fetchall_test(command_showall):
   '''查询所有数据...'''
   print('查询所有数据...')
-  fetchall_sql = '''SELECT * FROM student'''
+  fetchall_sql = command_showall
   conn = get_conn(DB_FILE_PATH)
   fetchall(conn, fetchall_sql)
-def fetchone_test():
+def fetchone_test(command_showone):
   '''查询一条数据...'''
   print('查询一条数据...')
-  fetchone_sql = 'SELECT * FROM student WHERE ID = ? '
-  data = 1
+  fetchone_sql = command_showone
+  data = 3
   conn = get_conn(DB_FILE_PATH)
   fetchone(conn, fetchone_sql, data)
-def update_test():
+def update_test(command_update,command_updatedata):
   '''更新数据...'''
   print('更新数据...')
-  update_sql = 'UPDATE student SET name = ? WHERE ID = ? '
-  data = [('HongtenAA', 1),
-      ('HongtenBB', 2),
-      ('HongtenCC', 3),
-      ('HongtenDD', 4)]
+  update_sql = command_update
+  data = command_updatedata
   conn = get_conn(DB_FILE_PATH)
   update(conn, update_sql, data)
-def delete_test():
+def delete_test(command_delete,command_deletedata):
   '''删除数据...'''
   print('删除数据...')
-  delete_sql = 'DELETE FROM student WHERE NAME = ? AND ID = ? '
-  data = [('HongtenAA', 1),
-      ('HongtenCC', 3)]
+  delete_sql = command_delete
+  data = command_deletedata
   conn = get_conn(DB_FILE_PATH)
   delete(conn, delete_sql, data)
 ###############################################################
 ####      测试操作   END
 ###############################################################
+
+
+
 def init():
   '''初始化方法'''
   #数据库文件绝句路径
   global DB_FILE_PATH
-  DB_FILE_PATH = 'hongten.db'
+  DB_FILE_PATH = '焊接刀总览表.db'                        #这里是新建的数据库的名称
   #数据库表名称
   global TABLE_NAME
-  TABLE_NAME = 'student'
+  TABLE_NAME = '焊接刀总览表'
   #是否打印sql
   global SHOW_SQL
   SHOW_SQL = True
@@ -261,21 +249,58 @@ def init():
   #如果存在数据库表，则删除表
   drop_table_test()
   #创建数据库表student
-  create_table_test()
+  create_table_test(command_create)
   #向数据库表中插入数据
-  save_test()
+  save_test(command_save,command_savedata)
 
 
 def main():
   init()
-  fetchall_test()
+  fetchall_test(command_showall)
   print('#' * 50)
-  fetchone_test()
+  fetchone_test(command_showone)
   print('#' * 50)
-  update_test()
-  fetchall_test()
+  update_test(command_update, command_updatedata)
+  fetchall_test(command_showall)
   print('#' * 50)
-  delete_test()
-  fetchall_test()
+  delete_test(command_delete, command_deletedata)
+  fetchall_test(command_showall)
+
+#建立表格，表格内容的每一列的列名写在这里
+command_create = '''CREATE TABLE `焊接刀总览表` (
+             `序号` int(11) NOT NULL,
+             `焊接刀规格` varchar(20) NOT NULL,
+             `熔接刀申请数` int(11) DEFAULT NULL,
+             `熔接刀入库数` int(11) DEFAULT NULL,
+             `焊接刀出库数` int(11) DEFAULT NULL,
+             `熔接刀库存数` int(11) DEFAULT NULL,
+             `库位` varchar(20) NOT NULL,
+             `备注` varchar(20) NOT NULL,
+              PRIMARY KEY (`序号`)
+            )'''
+
+#插入需要插入的数据
+command_save = '''INSERT INTO 焊接刀总览表 values (?, ?, ?, ?, ?, ?,?,?)'''
+command_savedata = [(1, '20454-20p', 5, 5, -4, 1, 'A1','备注'),
+      (2, '20454-30p', 20, 20, -4, 16, 'A2','备注'),
+      (3, '20454-40p', 20, 20, -4, 16, 'A3','备注'),
+      (4, '20454-50p', 10, 10, -4, 6, 'A4','备注')]
+
+#查询总览表的情况
+command_showall = '''SELECT * FROM 焊接刀总览表'''
+command_showone = 'SELECT * FROM 焊接刀总览表 WHERE 序号 = ? '
+
+#修改指定的数据，事例是更新序号是？时的焊接刀规格
+command_update = 'UPDATE 焊接刀总览表 SET 焊接刀规格 = ? WHERE 序号 = ? '
+command_updatedata = [('改动1号焊接刀的规格', 1),
+      ('改动2号焊接刀的规格', 2),
+      ('改动3号焊接刀的规格', 3),
+      ('改动4号焊接刀的规格', 4)]
+
+#删除指定的数据，下例是删除满足序号是？和焊接刀规格是？的数据，因为之前修改过，所以现在的规格是修稿后的规格
+command_delete = 'DELETE FROM 焊接刀总览表 WHERE 焊接刀规格 = ? AND 序号 = ? '
+command_deletedata = [('改动1号焊接刀的规格', 1),
+      ('改动2号焊接刀的规格', 3)]
+
 if __name__ == '__main__':
   main()
